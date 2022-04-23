@@ -1,33 +1,23 @@
-from typing import List, Dict
+# Observatory Service
+
+# Import framework
 from flask import Flask
-import mysql.connector
-import json
+from flask_restful import Resource, Api
 
+# Instantiate the app
 app = Flask(__name__)
+api = Api(app)
 
+class Observatory(Resource):
+    def get(self):
+        return {
+            'Galaxies': ['Milkyway', 'Andromeda', 
+            'Large Magellanic Cloud (LMC)']
+        }
 
-def test_table() -> List[Dict]:
-    config = {
-        'user': 'root',
-        'password': 'root',
-        'host': 'db',
-        'port': '3306',
-        'database': 'devopsroles'
-    }
-    connection = mysql.connector.connect(**config)
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM test_table')
-    results = [{name: color} for (name, color) in cursor]
-    cursor.close()
-    connection.close()
+# Create routes
+api.add_resource(Observatory, '/')
 
-    return results
-
-
-@app.route('/')
-def index() -> str:
-    return json.dumps({'test_table': test_table()})
-
-
+# Run the application
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80, debug=True)
